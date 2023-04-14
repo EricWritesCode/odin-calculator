@@ -29,6 +29,9 @@ function multiply(num1, num2) {
 };
 
 function divide(num1, num2) {
+  if (num2 === 0)
+    return "Divide by zero error";
+    
   const result = (num1 / num2);
   if (result % 2 != 0)
     return result.toFixed(3);
