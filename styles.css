@@ -53,6 +53,10 @@ p {
   width: 100%;
   height: 100%;
   font-weight: bold;
+
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none;
 }
 
 .numpad-key .negative {

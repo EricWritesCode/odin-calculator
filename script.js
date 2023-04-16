@@ -19,28 +19,32 @@ let equals = document.querySelector(".equals");
 let readoutLineTop = document.querySelector("#readoutLineTop");
 let readoutLineBot = document.querySelector("#readoutLineBot");
 
+// TODO: Add keyboard support
 function createEventListeners() {
   // Numbers and decimal point
   digits.forEach((button) => {
     button.addEventListener("click", (event) => {
       if (
         readoutLineBot.innerText === "0" ||
-        readoutLineBot.innerText.endsWith("ERROR")
-      )
+        readoutLineBot.innerText.endsWith("ERROR") ||
+        readoutLineBot.innerText === "NaN"
+        )
         readoutLineBot.innerText = button.innerText;
-      else
+        else
         readoutLineBot.innerText = readoutLineBot.innerText.concat(
           button.innerText
-        );
-    });
-  });
-  decimal.addEventListener("click", (event) => {
-    if (!decimalDisabled) {
-      readoutLineBot.innerText = readoutLineBot.innerText.concat(".");
-      disableDecimal();
-    }
-  });
-
+          );
+        });
+      });
+      decimal.addEventListener("click", (event) => {
+        if (!decimalDisabled) {
+          readoutLineBot.innerText = readoutLineBot.innerText.concat(".");
+          disableDecimal();
+        }
+      });
+      
+  // BUG: User can add to null expressions
+  // BUG: User can enter multiple operators without an operand
   // Operators
   operators.forEach((button) => {
     button.addEventListener("click", (event) => {
@@ -61,6 +65,7 @@ function createEventListeners() {
     });
   });
 
+  // BUG: User can submit empty negative numbers
   // Negative sign
   negative.addEventListener("click", (event) => {
     // If first button pressed, allow negative
