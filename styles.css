@@ -4,7 +4,7 @@
 }
 
 p {
-  font-size: 36px;
+  font-size: 32px;
   height: 1em;
   margin: 4px;
 }
@@ -51,6 +51,7 @@ p {
   text-align: center;
   width: 100%;
   height: 100%;
+  font-weight: bold;
 }
 
 .numpad-key .negative {
@@ -59,9 +60,17 @@ p {
 
 .numpad-key.operator {
   background-color: #64748b;
+  color: #fafaf9;
 }
 
-.numpad-key.operator.equals {
+.numpad-key.equals {
+  background-color: #64748b;
+  color: #fafaf9;
   grid-column: 3 / span 2;
   font-size: 24px;
+}
+
+.numpad-key.clear, .numpad-key.all-clear {
+  background-color: #0f172a;
+  color: #fafaf9;
 }

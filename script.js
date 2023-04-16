@@ -1,53 +1,75 @@
 // Globals
-let num1 = '';
-let num2 = '';
-let operator;
+let num1 = "";
+let num2 = "";
+let operator = "";
 let result;
 let currentOperation = null;
+let lastOperation;
 
 // DOM elements
 let digits = document.querySelectorAll(".digit");
 let operators = document.querySelectorAll(".operator");
 let decimal = document.querySelector(".decimal");
 let negative = document.querySelector(".negative");
+let clear = document.querySelector(".clear");
+let allClear = document.querySelector(".all-clear");
 let readoutLineTop = document.querySelector("#readoutLineTop");
 let readoutLineBot = document.querySelector("#readoutLineBot");
 
-
 function createEventListeners() {
-  digits.forEach( button => {
+  digits.forEach((button) => {
     button.addEventListener("click", (event) => {
-      appendNumber(button.innerText);
+      if (readoutLineBot.innerText === "0")
+        readoutLineBot.innerText = button.innerText;
+      else
+        readoutLineBot.innerText = appendNumber(
+          button.innerText,
+          readoutLineBot.innerText
+        );
     });
   });
 
-  operators.forEach( button => {
+  operators.forEach((button) => {
     button.addEventListener("click", (event) => {
-      console.log(`clicked ${button.innerText}`);
+      num1 = readoutLineBot.innerText;
+      currentOperation = true;
+      operator = button.innerText;
+      readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
     });
   });
 
-  decimal.addEventListener("click", decimate);
-  negative.addEventListener("click", negate);
+  decimal.addEventListener("click", (event) => appendNumber("."));
+  negative.addEventListener("click", (event) => {
+    // If first button pressed, allow negative
+    if (readoutLineBot.innerText === "0") readoutLineBot.innerText = "-";
+    // If last item entered was the operator, allow negative
+    else if (currentOperation && readoutLineBot.innerText.endsWith(operator))
+      readoutLineBot.innerText = readoutLineBot.innerText.concat("-");
+  });
+  clear.addEventListener("click", clearLine);
+  allClear.addEventListener("click", clearAll);
 }
 
-function appendNumber(number) {
-  if (readoutLineBot.innerText === '0')
-    readoutLineBot.innerText = number;
-  else
-    readoutLineBot.innerText = readoutLineBot.innerText.concat(number);
+// REFACTOR Takes in a number and string, returns combined string. Might not need this anymore
+function appendNumber(number, numberString) {
+  numberString = numberString.concat(number);
+  return numberString;
 }
 
 // OPERATOR FUNCTIONS //
 
-function negate() {
-  // TODO negate subsequent number
-  console.log("clicked negative");
+function clearLine() {
+  num1 = "";
+  num2 = "";
+  operator = "";
+  currentOperation = null;
+  readoutLineBot.innerText = 0;
 }
 
-function decimate() {
-  // TODO add subsequent numbers as decimal
-  console.log("clicked decimal");
+function clearAll() {
+  // TODO clear all lines
+  clearLine();
+  console.log("clicked clear all");
 }
 
 // All operations round to three decimal places
@@ -79,16 +101,6 @@ function divide(num1, num2) {
 
 function power(a, b) {
   return Math.pow(a, b);
-}
-
-function factorial(num) {
-  if (num === 0) return 1;
-
-  let result = 1;
-  for (let i = num; i > 0; i--) {
-    result *= i;
-  }
-  return result;
 }
 
 function operate(num1, operator, num2) {
