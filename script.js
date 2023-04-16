@@ -13,10 +13,13 @@ let decimal = document.querySelector(".decimal");
 let negative = document.querySelector(".negative");
 let clear = document.querySelector(".clear");
 let allClear = document.querySelector(".all-clear");
+let equals = document.querySelector(".equals");
+
 let readoutLineTop = document.querySelector("#readoutLineTop");
 let readoutLineBot = document.querySelector("#readoutLineBot");
 
 function createEventListeners() {
+  // Numbers and decimal point
   digits.forEach((button) => {
     button.addEventListener("click", (event) => {
       if (readoutLineBot.innerText === "0")
@@ -28,7 +31,12 @@ function createEventListeners() {
         );
     });
   });
+  decimal.addEventListener(
+    "click",
+    (event) => (readoutLineBot.innerText = readoutLineBot.innerText.concat("."))
+  );
 
+  // Operators
   operators.forEach((button) => {
     button.addEventListener("click", (event) => {
       num1 = readoutLineBot.innerText;
@@ -38,7 +46,7 @@ function createEventListeners() {
     });
   });
 
-  decimal.addEventListener("click", (event) => appendNumber("."));
+  // Negative sign
   negative.addEventListener("click", (event) => {
     // If first button pressed, allow negative
     if (readoutLineBot.innerText === "0") readoutLineBot.innerText = "-";
@@ -46,11 +54,22 @@ function createEventListeners() {
     else if (currentOperation && readoutLineBot.innerText.endsWith(operator))
       readoutLineBot.innerText = readoutLineBot.innerText.concat("-");
   });
+
+  // Clear buttons
   clear.addEventListener("click", clearLine);
   allClear.addEventListener("click", clearAll);
+
+  // Equals button
+  equals.addEventListener("click", (event) => {
+    console.log("Clicked equals");
+    let currentReadout = readoutLineBot.innerText;
+    let startIndex = currentReadout.indexOf(operator) + 1;
+    num2 = currentReadout.slice(startIndex);
+    operate(num1, operator, num2);
+  });
 }
 
-// REFACTOR Takes in a number and string, returns combined string. Might not need this anymore
+// REFACTOR Takes in a number and string, returns combined string. Need to refactor digits event assignment before removing
 function appendNumber(number, numberString) {
   numberString = numberString.concat(number);
   return numberString;
@@ -67,21 +86,21 @@ function clearLine() {
 }
 
 function clearAll() {
-  // TODO clear all lines
   clearLine();
+  readoutLineTop.innerText = '';
   console.log("clicked clear all");
 }
 
 // All operations round to three decimal places
 function add(num1, num2) {
-  const result = num1 + num2;
-  if (result % 2 != 0) return result.toFixed(3);
+  const result = parseFloat(num1) + parseFloat(num2);
+  if (!Number.isInteger(result)) return result.toFixed(3);
   else return result;
 }
 
 function subtract(num1, num2) {
-  const result = num1 - num2;
-  if (result % 2 != 0) return result.toFixed(3);
+  const result = parseFloat(num1) - parseFloat(num2);
+  if (!Number.isInteger(result)) return result.toFixed(3);
   else return result;
 }
 
@@ -106,10 +125,12 @@ function power(a, b) {
 function operate(num1, operator, num2) {
   switch (operator) {
     case "+":
-      add(num1, num2);
+      readoutLineTop.innerText = readoutLineBot.innerText;
+      readoutLineBot.innerText = add(num1, num2);
       break;
     case "-":
-      subtract(num1, num2);
+      readoutLineTop.innerText = readoutLineBot.innerText;
+      readoutLineBot.innerText = subtract(num1, num2);
       break;
     case "*":
       multiply(num1, num2);
