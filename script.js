@@ -41,7 +41,7 @@ function createEventListeners() {
   // Operators
   operators.forEach((button) => {
     button.addEventListener("click", (event) => {
-      if (!currentOperation && operator === '') {
+      if (!currentOperation && operator === "") {
         num1 = readoutLineBot.innerText;
         currentOperation = true;
         operator = button.innerText;
@@ -134,6 +134,12 @@ function operate(num1, operator, num2) {
     case "÷":
       readoutLineTop.innerText = readoutLineBot.innerText;
       readoutLineBot.innerText = divide(num1, num2);
+      break;
+    case "":
+      if (currentOperation === null) {
+        readoutLineTop.innerText = readoutLineBot.innerText;
+        readoutLineBot.innerText = readoutLineTop.innerText;
+      }
       break;
     default:
       readoutLineTop.innerText = readoutLineBot.innerText;
