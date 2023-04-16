@@ -135,12 +135,6 @@ function operate(num1, operator, num2) {
       readoutLineTop.innerText = readoutLineBot.innerText;
       readoutLineBot.innerText = divide(num1, num2);
       break;
-    case "":
-      if (currentOperation === null) {
-        readoutLineTop.innerText = readoutLineBot.innerText;
-        readoutLineBot.innerText = readoutLineTop.innerText;
-      }
-      break;
     default:
       readoutLineTop.innerText = readoutLineBot.innerText;
       readoutLineBot.innerText = "Operator ERROR";
@@ -152,7 +146,15 @@ function evaluate() {
   let startIndex = currentReadout.indexOf(operator) + 1;
   num2 = currentReadout.slice(startIndex);
 
-  operate(num1, operator, num2);
+  if(operator === '' && currentOperation === null) {
+    readoutLineTop.innerText = readoutLineBot.innerText;
+    readoutLineBot.innerText = readoutLineTop.innerText;
+  } else if (num2 === '') {
+    // TODO: Add error feedback for incomplete operation
+    return
+  } else {
+    operate(num1, operator, num2);
+  }
 
   operator = "";
   currentOperation = null;
