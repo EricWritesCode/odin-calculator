@@ -110,8 +110,7 @@ function multiply(num1, num2) {
 }
 
 function divide(num1, num2) {
-  if (num2 === 0) return "Divide by 0 ERROR";
-
+  if (num2 === "0") return "Divide by 0 ERROR";
   const result = parseFloat(num1) / parseFloat(num2);
   if (!Number.isInteger(result)) return result.toFixed(3);
   else return result;
@@ -146,12 +145,12 @@ function evaluate() {
   let startIndex = currentReadout.indexOf(operator) + 1;
   num2 = currentReadout.slice(startIndex);
 
-  if(operator === '' && currentOperation === null) {
+  if (operator === "" && currentOperation === null) {
     readoutLineTop.innerText = readoutLineBot.innerText;
     readoutLineBot.innerText = readoutLineTop.innerText;
-  } else if (num2 === '') {
+  } else if (num2 === "") {
     // TODO: Add error feedback for incomplete operation
-    return
+    return;
   } else {
     operate(num1, operator, num2);
   }
