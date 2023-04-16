@@ -22,7 +22,7 @@ function createEventListeners() {
   // Numbers and decimal point
   digits.forEach((button) => {
     button.addEventListener("click", (event) => {
-      if (readoutLineBot.innerText === "0")
+      if (readoutLineBot.innerText === "0" || readoutLineBot.innerText.endsWith('ERROR'))
         readoutLineBot.innerText = button.innerText;
       else
         readoutLineBot.innerText = appendNumber(
@@ -61,7 +61,6 @@ function createEventListeners() {
 
   // Equals button
   equals.addEventListener("click", (event) => {
-    console.log("Clicked equals");
     let currentReadout = readoutLineBot.innerText;
     let startIndex = currentReadout.indexOf(operator) + 1;
     num2 = currentReadout.slice(startIndex);
@@ -88,7 +87,6 @@ function clearLine() {
 function clearAll() {
   clearLine();
   readoutLineTop.innerText = '';
-  console.log("clicked clear all");
 }
 
 // All operations round to three decimal places
@@ -105,21 +103,17 @@ function subtract(num1, num2) {
 }
 
 function multiply(num1, num2) {
-  const result = num1 * num2;
-  if (result % 2 != 0) return result.toFixed(3);
+  const result = parseFloat(num1) * parseFloat(num2);
+  if (!Number.isInteger(result)) return result.toFixed(3);
   else return result;
 }
 
 function divide(num1, num2) {
-  if (num2 === 0) return "Divide by zero error";
+  if (num2 === 0) return "Divide by 0 ERROR";
 
-  const result = num1 / num2;
-  if (result % 2 != 0) return result.toFixed(3);
+  const result = parseFloat(num1) / parseFloat(num2);
+  if (!Number.isInteger(result)) return result.toFixed(3);
   else return result;
-}
-
-function power(a, b) {
-  return Math.pow(a, b);
 }
 
 function operate(num1, operator, num2) {
@@ -132,14 +126,17 @@ function operate(num1, operator, num2) {
       readoutLineTop.innerText = readoutLineBot.innerText;
       readoutLineBot.innerText = subtract(num1, num2);
       break;
-    case "*":
-      multiply(num1, num2);
+    case "×":
+      readoutLineTop.innerText = readoutLineBot.innerText;
+      readoutLineBot.innerText = multiply(num1, num2);
       break;
-    case "/":
-      divide(num1, num2);
+    case "÷":
+      readoutLineTop.innerText = readoutLineBot.innerText;
+      readoutLineBot.innerText = divide(num1, num2);
       break;
     default:
-      return "Operator Error";
+      readoutLineTop.innerText = readoutLineBot.innerText;
+      readoutLineBot.innerText = "Operator ERROR";
   }
 }
 
