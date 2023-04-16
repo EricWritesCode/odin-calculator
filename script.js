@@ -41,10 +41,18 @@ function createEventListeners() {
   // Operators
   operators.forEach((button) => {
     button.addEventListener("click", (event) => {
-      num1 = readoutLineBot.innerText;
-      currentOperation = true;
-      operator = button.innerText;
-      readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
+      if (!currentOperation && operator === '') {
+        num1 = readoutLineBot.innerText;
+        currentOperation = true;
+        operator = button.innerText;
+        readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
+      } else {
+        evaluate();
+        num1 = readoutLineBot.innerText;
+        currentOperation = true;
+        operator = button.innerText;
+        readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
+      }
     });
   });
 
@@ -63,10 +71,7 @@ function createEventListeners() {
 
   // Equals button
   equals.addEventListener("click", (event) => {
-    let currentReadout = readoutLineBot.innerText;
-    let startIndex = currentReadout.indexOf(operator) + 1;
-    num2 = currentReadout.slice(startIndex);
-    operate(num1, operator, num2);
+    evaluate();
   });
 }
 
@@ -134,6 +139,17 @@ function operate(num1, operator, num2) {
       readoutLineTop.innerText = readoutLineBot.innerText;
       readoutLineBot.innerText = "Operator ERROR";
   }
+}
+
+function evaluate() {
+  let currentReadout = readoutLineBot.innerText;
+  let startIndex = currentReadout.indexOf(operator) + 1;
+  num2 = currentReadout.slice(startIndex);
+
+  operate(num1, operator, num2);
+
+  operator = "";
+  currentOperation = null;
 }
 
 createEventListeners();
