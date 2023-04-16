@@ -22,12 +22,14 @@ function createEventListeners() {
   // Numbers and decimal point
   digits.forEach((button) => {
     button.addEventListener("click", (event) => {
-      if (readoutLineBot.innerText === "0" || readoutLineBot.innerText.endsWith('ERROR'))
+      if (
+        readoutLineBot.innerText === "0" ||
+        readoutLineBot.innerText.endsWith("ERROR")
+      )
         readoutLineBot.innerText = button.innerText;
       else
-        readoutLineBot.innerText = appendNumber(
-          button.innerText,
-          readoutLineBot.innerText
+        readoutLineBot.innerText = readoutLineBot.innerText.concat(
+          button.innerText
         );
     });
   });
@@ -68,12 +70,6 @@ function createEventListeners() {
   });
 }
 
-// REFACTOR Takes in a number and string, returns combined string. Need to refactor digits event assignment before removing
-function appendNumber(number, numberString) {
-  numberString = numberString.concat(number);
-  return numberString;
-}
-
 // OPERATOR FUNCTIONS //
 
 function clearLine() {
@@ -86,7 +82,7 @@ function clearLine() {
 
 function clearAll() {
   clearLine();
-  readoutLineTop.innerText = '';
+  readoutLineTop.innerText = "";
 }
 
 // All operations round to three decimal places
