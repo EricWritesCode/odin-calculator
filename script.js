@@ -5,6 +5,7 @@ let operator = "";
 let result;
 let currentOperation = null;
 let lastOperation;
+let decimalDisabled = false;
 
 // DOM elements
 let digits = document.querySelectorAll(".digit");
@@ -33,10 +34,12 @@ function createEventListeners() {
         );
     });
   });
-  decimal.addEventListener(
-    "click",
-    (event) => (readoutLineBot.innerText = readoutLineBot.innerText.concat("."))
-  );
+  decimal.addEventListener("click", (event) => {
+    if (!decimalDisabled) {
+      readoutLineBot.innerText = readoutLineBot.innerText.concat(".");
+      disableDecimal();
+    }
+  });
 
   // Operators
   operators.forEach((button) => {
@@ -46,12 +49,14 @@ function createEventListeners() {
         currentOperation = true;
         operator = button.innerText;
         readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
+        enableDecimal();
       } else {
         evaluate();
         num1 = readoutLineBot.innerText;
         currentOperation = true;
         operator = button.innerText;
         readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
+        enableDecimal();
       }
     });
   });
@@ -83,11 +88,22 @@ function clearLine() {
   operator = "";
   currentOperation = null;
   readoutLineBot.innerText = 0;
+  enableDecimal();
 }
 
 function clearAll() {
   clearLine();
   readoutLineTop.innerText = "";
+}
+
+function disableDecimal() {
+  decimalDisabled = true;
+  decimal.style.setProperty("color", "#9ca3af");
+}
+
+function enableDecimal() {
+  decimalDisabled = false;
+  decimal.style.setProperty("color", "#020617");
 }
 
 // All operations round to three decimal places
@@ -153,6 +169,7 @@ function evaluate() {
     return;
   } else {
     operate(num1, operator, num2);
+    enableDecimal();
   }
 
   operator = "";
