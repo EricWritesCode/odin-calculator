@@ -18,12 +18,14 @@ let equals = document.querySelector(".equals");
 
 let readoutLineTop = document.querySelector("#readoutLineTop");
 let readoutLineBot = document.querySelector("#readoutLineBot");
+let errorReadout = document.querySelector("#errorReadout");
 
 // TODO: Add keyboard support
 function createEventListeners() {
   // Numbers and decimal point
   digits.forEach((button) => {
     button.addEventListener("click", (event) => {
+      clearError();
       if (
         readoutLineBot.innerText === "0" ||
         readoutLineBot.innerText.endsWith("ERROR") ||
@@ -48,8 +50,9 @@ function createEventListeners() {
   // Operators
   operators.forEach((button) => {
     button.addEventListener("click", (event) => {
-      if (readoutLineBot.innerText === "-") {
-        // TODO: Add syntax error for empty negatives
+      clearError();
+      if (readoutLineBot.innerText.endsWith("-")) {
+        errorReadout.innerText = "Syntax error: Empty negative";
       } else if (!currentOperation && operator === "") {
         num1 = readoutLineBot.innerText;
         currentOperation = true;
@@ -72,7 +75,11 @@ function createEventListeners() {
     // If first button pressed, allow negative
     if (readoutLineBot.innerText === "0") readoutLineBot.innerText = "-";
     // If last item entered was the operator, allow negative
-    else if (currentOperation && readoutLineBot.innerText.endsWith(operator))
+    else if (
+      currentOperation &&
+      readoutLineBot.innerText.endsWith(operator) &&
+      !readoutLineBot.innerText.endsWith("--")
+    )
       readoutLineBot.innerText = readoutLineBot.innerText.concat("-");
   });
 
@@ -82,14 +89,15 @@ function createEventListeners() {
 
   // Equals button
   equals.addEventListener("click", (event) => {
-    // TODO: Add syntax errror for empty negative
     if (!readoutLineBot.innerText.endsWith("-")) evaluate();
+    else errorReadout.innerText = "Syntax error: Empty negative";
   });
 }
 
 // OPERATOR FUNCTIONS //
 
 function clearLine() {
+  clearError();
   num1 = "";
   num2 = "";
   operator = "";
@@ -101,6 +109,10 @@ function clearLine() {
 function clearAll() {
   clearLine();
   readoutLineTop.innerText = "";
+}
+
+function clearError() {
+  errorReadout.innerText = "";
 }
 
 function disableDecimal() {
@@ -172,7 +184,7 @@ function evaluate() {
     readoutLineTop.innerText = readoutLineBot.innerText;
     readoutLineBot.innerText = readoutLineTop.innerText;
   } else if (num2 === "") {
-    // TODO: Add error feedback for incomplete operation
+    errorReadout.innerText = "Error: Incomplete operation";
     return;
   } else {
     operate(num1, operator, num2);
