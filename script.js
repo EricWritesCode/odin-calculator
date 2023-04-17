@@ -20,24 +20,14 @@ let readoutLineTop = document.querySelector("#readoutLineTop");
 let readoutLineBot = document.querySelector("#readoutLineBot");
 let errorReadout = document.querySelector("#errorReadout");
 
-// TODO: Add keyboard support
 function createEventListeners() {
   // Numbers and decimal point
   digits.forEach((button) => {
     button.addEventListener("click", (event) => {
-      clearError();
-      if (
-        readoutLineBot.innerText === "0" ||
-        readoutLineBot.innerText.endsWith("ERROR") ||
-        readoutLineBot.innerText === "NaN"
-      )
-        readoutLineBot.innerText = button.innerText;
-      else
-        readoutLineBot.innerText = readoutLineBot.innerText.concat(
-          button.innerText
-        );
+      addDigit(button.innerText);
     });
   });
+
   decimal.addEventListener("click", (event) => {
     if (!decimalDisabled) {
       readoutLineBot.innerText = readoutLineBot.innerText.concat(".");
@@ -49,31 +39,7 @@ function createEventListeners() {
   operators.forEach((button) => {
     button.addEventListener("click", (event) => {
       clearError();
-      let currentReadout = readoutLineBot.innerText;
-      if (
-        currentReadout.endsWith("-") ||
-        currentReadout.endsWith("+") ||
-        currentReadout.endsWith("÷") ||
-        currentReadout.endsWith("×")
-      ) {
-        errorReadout.innerText = "Syntax error";
-      } else if (currentReadout === "NaN") {
-        // Clear the line if the previous operation returned null somehow
-        clearLine();
-      } else if (!currentOperation && operator === "") {
-        num1 = currentReadout;
-        currentOperation = true;
-        operator = button.innerText;
-        readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
-        enableDecimal();
-      } else {
-        evaluate();
-        num1 = currentReadout;
-        currentOperation = true;
-        operator = button.innerText;
-        readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
-        enableDecimal();
-      }
+      addOperator(button.innerText);
     });
   });
 
@@ -98,6 +64,33 @@ function createEventListeners() {
   equals.addEventListener("click", (event) => {
     if (!readoutLineBot.innerText.endsWith("-")) evaluate();
     else errorReadout.innerText = "Syntax error: Empty negative";
+  });
+
+  // TODO: Add support for backspace
+  // Keyboard support
+  document.addEventListener("keydown", (event) => {
+    const key = event.key;
+
+    if (key >= 0 && key <= 9) addDigit(key);
+
+    if (key === ".") {
+      if (!decimalDisabled) {
+        readoutLineBot.innerText = readoutLineBot.innerText.concat(".");
+        disableDecimal();
+      }
+    }
+
+    if (key === "+" || key === "-") addOperator(key);
+    if (key === "*") addOperator("×");
+    if (key === "/") addOperator("÷");
+
+    if (key === "=" || key === "Enter") {
+      if (!readoutLineBot.innerText.endsWith("-")) evaluate();
+      else errorReadout.innerText = "Syntax error: Empty negative";
+    }
+
+    // if (key === "Backspace") clearLine();
+    if (key === "Delete") clearLine();
   });
 }
 
@@ -130,6 +123,46 @@ function disableDecimal() {
 function enableDecimal() {
   decimalDisabled = false;
   decimal.style.setProperty("color", "#020617");
+}
+
+function addDigit(digitInput) {
+  clearError();
+  if (
+    readoutLineBot.innerText === "0" ||
+    readoutLineBot.innerText.endsWith("ERROR") ||
+    readoutLineBot.innerText === "NaN"
+  )
+    readoutLineBot.innerText = digitInput;
+  else readoutLineBot.innerText = readoutLineBot.innerText.concat(digitInput);
+}
+
+function addOperator(operatorInput) {
+  let currentReadout = readoutLineBot.innerText;
+
+  if (
+    currentReadout.endsWith("-") ||
+    currentReadout.endsWith("+") ||
+    currentReadout.endsWith("÷") ||
+    currentReadout.endsWith("×")
+  ) {
+    errorReadout.innerText = "Syntax error";
+  } else if (currentReadout === "NaN") {
+    // Clear the line if the previous operation returned null somehow
+    clearLine();
+  } else if (!currentOperation && operator === "") {
+    num1 = currentReadout;
+    currentOperation = true;
+    operator = operatorInput;
+    readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
+    enableDecimal();
+  } else {
+    evaluate();
+    num1 = currentReadout;
+    currentOperation = true;
+    operator = operatorInput;
+    readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
+    enableDecimal();
+  }
 }
 
 // All operations round to three decimal places
