@@ -136,6 +136,7 @@ function addDigit(digitInput) {
   else readoutLineBot.innerText = readoutLineBot.innerText.concat(digitInput);
 }
 
+
 function addOperator(operatorInput) {
   let currentReadout = readoutLineBot.innerText;
 
@@ -146,18 +147,18 @@ function addOperator(operatorInput) {
     currentReadout.endsWith("×")
   ) {
     errorReadout.innerText = "Syntax error";
-  } else if (currentReadout === "NaN") {
-    // Clear the line if the previous operation returned null somehow
-    clearLine();
   } else if (!currentOperation && operator === "") {
     num1 = currentReadout;
     currentOperation = true;
     operator = operatorInput;
     readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
     enableDecimal();
+  } else if (currentReadout === "NaN") {
+    // Clear the line if the previous operation returned null somehow
+    clearLine();
   } else {
     evaluate();
-    num1 = currentReadout;
+    num1 = readoutLineBot.innerText;
     currentOperation = true;
     operator = operatorInput;
     readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
