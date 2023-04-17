@@ -20,7 +20,6 @@ let readoutLineTop = document.querySelector("#readoutLineTop");
 let readoutLineBot = document.querySelector("#readoutLineBot");
 let errorReadout = document.querySelector("#errorReadout");
 
-
 // EVENT HANDLERS //
 
 function createEventListeners() {
@@ -64,7 +63,6 @@ function createEventListeners() {
     else errorReadout.innerText = "Syntax error: Empty negative";
   });
 
-  // TODO: Add support for backspace
   // Keyboard support
   document.addEventListener("keydown", (event) => {
     const key = event.key;
@@ -87,7 +85,7 @@ function createEventListeners() {
       else errorReadout.innerText = "Syntax error: Empty negative";
     }
 
-    // if (key === "Backspace") clearLine();
+    if (key === "Backspace") deleteLast();
     if (key === "Delete") clearAll();
   });
 }
@@ -113,6 +111,30 @@ function clearError() {
   errorReadout.innerText = "";
 }
 
+function deleteLast() {
+  let finalCharacter = readoutLineBot.innerText.charAt(
+    readoutLineBot.innerText.length - 1
+  );
+  let trimmedString = readoutLineBot.innerText.substring(
+    0,
+    readoutLineBot.innerText.length - 1
+  );
+
+  // checks whether it's deleting an operator
+  if (
+    finalCharacter === "-" ||
+    finalCharacter === "+" ||
+    finalCharacter === "÷" ||
+    finalCharacter === "×"
+  ) {
+    num1 = "";
+    operator = "";
+    currentOperation = null;
+  }
+
+  readoutLineBot.innerText = trimmedString;
+}
+
 function enableDecimal() {
   decimalDisabled = false;
   decimal.style.setProperty("color", "#020617");
@@ -133,7 +155,6 @@ function addDigit(digitInput) {
     readoutLineBot.innerText = digitInput;
   else readoutLineBot.innerText = readoutLineBot.innerText.concat(digitInput);
 }
-
 
 function addOperator(operatorInput) {
   let currentReadout = readoutLineBot.innerText;
@@ -164,7 +185,7 @@ function addOperator(operatorInput) {
   }
 }
 
-// All operations round to three decimal places
+// All float operations round to three decimal places
 function add(num1, num2) {
   const result = parseFloat(num1) + parseFloat(num2);
   if (!Number.isInteger(result)) return result.toFixed(3);
