@@ -4,6 +4,16 @@
   color: #020617;
 }
 
+body {
+  background-color: #111827;
+}
+
+h1 {
+  font-size: 32px;
+  color: #f5f5f4;
+  border-bottom: 2px solid #f5f5f4;
+}
+
 p {
   font-size: 32px;
   height: 1em;
