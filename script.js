@@ -45,23 +45,30 @@ function createEventListeners() {
     }
   });
 
-  // BUG: User can add to null expressions
-  // BUG: User can enter multiple operators without an operand
   // Operators
   operators.forEach((button) => {
     button.addEventListener("click", (event) => {
       clearError();
-      if (readoutLineBot.innerText.endsWith("-")) {
-        errorReadout.innerText = "Syntax error: Empty negative";
+      let currentReadout = readoutLineBot.innerText;
+      if (
+        currentReadout.endsWith("-") ||
+        currentReadout.endsWith("+") ||
+        currentReadout.endsWith("÷") ||
+        currentReadout.endsWith("×")
+      ) {
+        errorReadout.innerText = "Syntax error";
+      } else if (currentReadout === "NaN") {
+        // Clear the line if the previous operation returned null somehow
+        clearLine();
       } else if (!currentOperation && operator === "") {
-        num1 = readoutLineBot.innerText;
+        num1 = currentReadout;
         currentOperation = true;
         operator = button.innerText;
         readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
         enableDecimal();
       } else {
         evaluate();
-        num1 = readoutLineBot.innerText;
+        num1 = currentReadout;
         currentOperation = true;
         operator = button.innerText;
         readoutLineBot.innerText = readoutLineBot.innerText.concat(operator);
