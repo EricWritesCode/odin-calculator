@@ -20,8 +20,10 @@ let readoutLineTop = document.querySelector("#readoutLineTop");
 let readoutLineBot = document.querySelector("#readoutLineBot");
 let errorReadout = document.querySelector("#errorReadout");
 
+
+// EVENT HANDLERS //
+
 function createEventListeners() {
-  // Numbers and decimal point
   digits.forEach((button) => {
     button.addEventListener("click", (event) => {
       addDigit(button.innerText);
@@ -35,7 +37,6 @@ function createEventListeners() {
     }
   });
 
-  // Operators
   operators.forEach((button) => {
     button.addEventListener("click", (event) => {
       clearError();
@@ -43,7 +44,6 @@ function createEventListeners() {
     });
   });
 
-  // Negative sign
   negative.addEventListener("click", (event) => {
     // If first button pressed, allow negative
     if (readoutLineBot.innerText === "0") readoutLineBot.innerText = "-";
@@ -56,11 +56,9 @@ function createEventListeners() {
       readoutLineBot.innerText = readoutLineBot.innerText.concat("-");
   });
 
-  // Clear buttons
   clear.addEventListener("click", clearLine);
   allClear.addEventListener("click", clearAll);
 
-  // Equals button
   equals.addEventListener("click", (event) => {
     if (!readoutLineBot.innerText.endsWith("-")) evaluate();
     else errorReadout.innerText = "Syntax error: Empty negative";
@@ -90,11 +88,11 @@ function createEventListeners() {
     }
 
     // if (key === "Backspace") clearLine();
-    if (key === "Delete") clearLine();
+    if (key === "Delete") clearAll();
   });
 }
 
-// OPERATOR FUNCTIONS //
+// CALCULATOR FUNCTIONS //
 
 function clearLine() {
   clearError();
@@ -115,14 +113,14 @@ function clearError() {
   errorReadout.innerText = "";
 }
 
-function disableDecimal() {
-  decimalDisabled = true;
-  decimal.style.setProperty("color", "#9ca3af");
-}
-
 function enableDecimal() {
   decimalDisabled = false;
   decimal.style.setProperty("color", "#020617");
+}
+
+function disableDecimal() {
+  decimalDisabled = true;
+  decimal.style.setProperty("color", "#9ca3af");
 }
 
 function addDigit(digitInput) {
